@@ -1,24 +1,28 @@
-//
-//  ContentView.swift
-//  ta
-//
-//  Created by Tiffany Xia on 2026/08/26.
-//
-
 import SwiftUI
 
 struct ContentView: View {
-    var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
-        }
-        .padding()
-    }
-}
+    @StateObject private var sessionManager = TarotSessionManager()
 
-#Preview {
-    ContentView()
+    var body: some View {
+        NavigationStack {
+            ZStack {
+                Color.gray.opacity(0.1).ignoresSafeArea()
+
+                switch sessionManager.currentStep {
+                case .intention:
+                    IntentionPhaseView(manager: sessionManager)
+                case .shuffling, .cutting:
+                    ShuffleAndCutPhaseView(manager: sessionManager)
+                case .picking:
+                    CardPickingPhaseView(manager: sessionManager)
+                case .reading:
+                    ReadingPhaseView(manager: sessionManager)
+                }
+            }
+            .navigationTitle("人际塔罗启示")
+            #if os(iOS)
+            .navigationBarTitleDisplayMode(.inline)
+            #endif
+        }
+    }
 }
